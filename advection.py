@@ -15,8 +15,9 @@
 	(0,0)
 '''
 
-# Courant condition: c * dt < min{dx, dy}
+# Courant condition: max{cx, cy} * dt < min{dx, dy}
 
+u0 = 1 # initial u value
 time = 0.1 # Total time in seconds
 dt = 0.003 # Time step in seconds
 nt = int(time / dt) # Amount of time steps
@@ -27,16 +28,21 @@ dy = 5 # Spatial step along Y in meters
 nx = int(lx / dx) # Number of nodes along X
 ny = int(ly / dy) # Number of nodes along Y
 
-# node = [vx, vy, p]
+# equation: du/dt + cx * du/dx + cy * du/dy = 0
+# node = [u]
 
-data_curr = [[0, 0, 0] * ny for _ in range(nx)] # n-th time layer data
-data_next = [[0, 0, 0] * ny for _ in range(nx)] # (n+1)-th time layer data
+data_curr = [[0] * ny for _ in range(nx)] # n-th time layer data
+data_next = [[0] * ny for _ in range(nx)] # (n+1)-th time layer data
 
 # with possible extension to the mat(x,y) dependency
-mat = {'rho': 997, 'c': 1435} # medium material rho [kg/m^3], c [m/s]
+mat = {'cx': 1450, 'cy': 1450} # equation parameters
 
 def apply_initial_data():
-	pass
+	for j in range(int(ny/4), int(ny/4 * 3)):
+		for i in range(int(nx/4), int(nx/4 * 3)):
+			print(ny, nx)
+			print(j, i)
+			data_curr[j][i] = u0;
 
 def save_data():
 	pass
@@ -49,11 +55,11 @@ if __name__ == '__main__':
 		# stepX
 		for j in range(1, ny - 1): # Don't think much about boundaries
 			for i in range(1, nx - 1):
-				data_next[j][i] = data_curr[j][i] # FIXME
+				data_next[j][i] = data_curr[j][i] - mat['cx'] * (data_curr[j][i] - data_curr[j][i-1]) / dx * dt
 		# stepY
 		for i in range(1, nx - 1): # Don't think much about boundaries
 			for j in range(1, ny - 1):
-				data_next[j][i] = data_curr[j][i] # FIXME
+				data_next[j][i] = data_curr[j][i] - mat['cy'] * (data_curr[j][i] - data_curr[j-1][i]) / dy * dt
 		# update time layer
 		for j in range(1, ny - 1): # Don't think much about boundaries
 			for i in range(1, nx - 1):
