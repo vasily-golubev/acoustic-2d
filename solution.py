@@ -29,8 +29,8 @@ ny = int(ly / dy) # Number of nodes along Y
 
 # node = [vx, vy, p]
 
-data_curr = [[0, 0, 0] * ny for _ in range(nx)] # n-th time layer data
-data_next = [[0, 0, 0] * ny for _ in range(nx)] # (n+1)-th time layer data
+data_curr = [[0, 0, 0] * nx for _ in range(ny)] # n-th time layer data
+data_next = [[0, 0, 0] * nx for _ in range(ny)] # (n+1)-th time layer data
 
 # with possible extension to the mat(x,y) dependency
 mat = {'rho': 997, 'c': 1435} # medium material rho [kg/m^3], c [m/s]
